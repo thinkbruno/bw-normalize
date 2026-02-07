@@ -1,27 +1,82 @@
-<h1 align="left">Project description</h1>
+# bw-normalize
 
-###
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Status](https://img.shields.io/badge/status-active-success)
 
-<p align="left">Converter of date values and currency values.<br><br>Adjusts the values to be able to save to the database and also adjusts some output formats for returns.<br><br>To convert a date to the US standard (for database), import NormalizeDates() class from normalize.dates.normalize_dates import NormalizeDates then use NormalizeDates().normalize(string_of_your_date)<br><br>Accepted date formats: 20/03/1990 20-30-1990 March 30th, 1990 20 de marÃ§o de 1990<br><br>To convert the date to a detailed format, import ConvertDates() class from normalize.dates.convert_dates import ConvertDates then use ConvertDates(string_your_format).convert(string_of_your_date*) * US standard - 1990-03-20<br><br>Accepted formats: /br returns 20/03/1990 full_br returns 20 de marÃ§o de 1990 full_us returns March 30th, 1990<br><br>To convert a currency value, import the NormalizeCurrency() class from normalize.currency.currency import NormalizeCurrency<br><br>then use NormalizeCurrency()normalize_currency(string_of_your_currency*) function<br><br>Accepted currency: R$ 5.000,00 R$ 5000,00 R$ 5,000 $ 5,000.00<br><br>then returns 5000.0<br><br>To convert a currency value, import the NormalizeCurrency() class from normalize.currency.currency import NormalizeCurrency<br><br>then use NormalizeCurrency(locale*)convert_currency(float_of_your_currency*) function<br><br>the “locale” argument return according to the given argument:<br>locale=”en_US” returns $ 5,000.00 locale=”pt_BR” returns R$ 5.000,00</p>
+A lightweight and efficient Python library designed to **normalize and format date and currency values**, making user input consistent, safe, and human‑readable.
 
-###
+---
 
-<h2 align="left">Developed by</h2>
+## ✨ Features
 
-###
+* 🚀 **Input Normalization**: Sanitize and standardize user inputs before persisting them in your database.
+* 🧑‍💻 **Human‑Readable Formatting**: Convert raw values into friendly, formatted strings.
+* 🌍 **Multi‑Locale Support**: Easily handle different regional formats and currency symbols.
+* ⚡ **Lightweight & Fast**: Minimal dependencies and simple API.
 
-<div align="left">
-  <a href="https://www.linkedin.com/in/ramosbruno90/" target="_blank">
-    <img src="https://img.shields.io/static/v1?message=LinkedIn&logo=linkedin&label=&color=0077B5&logoColor=white&labelColor=&style=for-the-badge" height="40" alt="linkedin logo"  />
-  </a>
-</div>
+---
 
-###
+## 📦 Installation
 
-<div align="left">
-  <a href="https://www.linkedin.com/in/wellington-alves-rosendo/" target="_blank">
-    <img src="https://img.shields.io/static/v1?message=LinkedIn&logo=linkedin&label=&color=0077B5&logoColor=white&labelColor=&style=for-the-badge" height="40" alt="linkedin logo"  />
-  </a>
-</div>
+Install the package via `pip`:
 
-###
+```bash
+pip install bw-normalize
+```
+
+---
+
+## 🚀 Quick Start
+
+```python
+from bw_normalize import format_currency, normalize_date
+```
+
+---
+
+## 💱 Currency Formatting
+
+```python
+print(format_currency(1250.50, locale="en_US"))
+# $1,250.50
+```
+
+You can easily adapt the locale to support different regions and currencies.
+
+---
+
+## 📅 Date Normalization
+
+```python
+print(normalize_date("12/25/2023"))
+# 2023-12-25
+```
+
+Supports common date formats and converts them into a standardized ISO format (`YYYY-MM-DD`).
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+Feel free to open a pull request or start a discussion.
+
+---
+
+## 👥 Authors
+
+Developed with ❤️ to simplify data handling in Python.
+
+<table border="0"> <tr> <td> <a href="https://www.linkedin.com/in/ramosbruno90/" target="_blank"> <img src="https://img.shields.io/static/v1?message=Bruno%20Ramos&logo=linkedin&label=&color=0077B5&logoColor=white&style=for-the-badge" height="35" alt="LinkedIn Bruno Ramos" /> </a> </td> <td> <a href="https://www.linkedin.com/in/wellington-alves-rosendo/" target="_blank"> <img src="https://img.shields.io/static/v1?message=Wellington%20Alves&logo=linkedin&label=&color=0077B5&logoColor=white&style=for-the-badge" height="35" alt="LinkedIn Wellington Alves" /> </a> </td> </tr> </table>
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+⭐ If this project helped you, consider giving it a star!
