@@ -1,141 +1,91 @@
+from datetime import date, datetime
+from enum import Enum
+from typing import Callable
 
-from datetime import date
+
+class DateFormat(Enum):
+    BR = "br"
+    FULL_BR = "full_br"
+    FULL_US = "full_us"
 
 
-class ConvertDates():
+class ConvertDates:
+    """
+    Responsible for converting ISO date strings (YYYY-MM-DD)
+    into different human-readable formats.
+    """
 
-    def __init__(self, format):
-        if not format:
-            raise ValueError('Format not defined')
-        self.__format = format
+    def __init__(self, date_format: DateFormat):
+        self._date_format = date_format
+        self._formatters: dict[DateFormat, Callable[[date], str]] = {
+            DateFormat.BR: self._format_br,
+            DateFormat.FULL_BR: self._format_full_br,
+            DateFormat.FULL_US: self._format_full_us,
+        }
 
-    def convert(self, data):
-        if not isinstance(data, str):
-            raise ValueError("Invalid date type, send strings only")
+    def convert(self, value: str) -> str:
+        """
+        Converts an ISO date string (YYYY-MM-DD) into the configured format.
+        """
+        parsed_date = self._parse_date(value)
 
-        data = self.__verify_date(data)
+        formatter = self._formatters.get(self._date_format)
+        if not formatter:
+            raise ValueError(f"Date format '{self._date_format.value}' is not supported")
 
-        if self.__format == "/br":
-            result = self.format_date_br(data[0], int(data[1]), int(data[2]))
-        elif self.__format == "full_br":
-            result = self.format_date_full_br(
-                data[0], int(data[1]), int(data[2]))
-        elif self.__format == "full_us":
-            result = self.format_date_full_us(
-                data[0], int(data[1]), int(data[2]))
-        else:
-            raise ValueError('Invalid format')
+        return formatter(parsed_date)
 
-        return result
 
-    def __verify_date(self, data):
-        data = data.split('-')
-
-        if data[2][0] == '0':
-            data[2] = data[2].replace("0", "")
-        if data[1][0] == '0':
-            data[1] = data[1].replace("0", "")
+    def _parse_date(self, value: str) -> date:
+        if not isinstance(value, str):
+            raise TypeError("Date value must be a string")
 
         try:
-            date(int(data[0]), int(data[1]), int(data[2]))
-        except:
-            raise('Invalid date')
-        return data
+            return datetime.strptime(value, "%Y-%m-%d").date()
+        except ValueError:
+            raise ValueError(f"Invalid date format: '{value}'. Expected YYYY-MM-DD")
 
-    def format_date_br(self, year, month, day):
-        if day < 1 or day > 31:
-            raise ValueError("Insert a valid day")
-        if day >= 1 and day <= 9:
-            day = f'0{day}'
-        if month >= 1 and month <= 9:
-            month = f'0{month}'
-        return f"{day}/{month}/{year}"
 
-    def format_date_full_br(self, year, month, day):
-        print(type(day))
-        if day < 1 or day > 31:
-            raise ValueError("Insert a valid day")
-        return f"{day} de {self.__get_month_name(month, 'br')} de {year}"
+    def _format_br(self, value: date) -> str:
+        return value.strftime("%d/%m/%Y")
 
-    def format_date_full_us(self, year, month, day):
-        __day = self.__get_us_day(day)
-        __month = self.__get_month_name(month, 'us')
-        upper_month = str(__month).title()
+    def _format_full_br(self, value: date) -> str:
+        month_name = self._get_month_name(value.month, "br")
+        return f"{value.day} de {month_name} de {value.year}"
 
-        return f"{upper_month} {__day}, {year}"
+    def _format_full_us(self, value: date) -> str:
+        month_name = self._get_month_name(value.month, "us")
+        day_suffix = self._get_day_suffix(value.day)
+        return f"{month_name} {value.day}{day_suffix}, {value.year}"
 
-    def __get_us_day(self, day):
 
-        if day < 1 or day > 31:
-            raise ValueError("Insert a valid day")
+    def _get_day_suffix(self, day: int) -> str:
+        if 11 <= day <= 13:
+            return "th"
 
-        if day == 31 or day == 1:
-            __day = f"{day}st"
-        elif day == 2:
-            __day = f'{day}nd'
-        elif day == 3:
-            __day = f'{day}rd'
-        else:
-            __day = f"{day}th"
+        match day % 10:
+            case 1:
+                return "st"
+            case 2:
+                return "nd"
+            case 3:
+                return "rd"
+            case _:
+                return "th"
 
-        return __day
+    def _get_month_name(self, month: int, locale: str) -> str:
+        months = {
+            "br": [
+                "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+                "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+            ],
+            "us": [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ],
+        }
 
-    def __get_month_name(self, month, format):
-        if format == "br":
-            if month == 1:
-                __month = 'janeiro'
-            elif month == 2:
-                __month = 'fevereiro'
-            elif month == 3:
-                __month = 'março'
-            elif month == 4:
-                __month = 'abril'
-            elif month == 5:
-                __month = 'maio'
-            elif month == 6:
-                __month = 'junho'
-            elif month == 7:
-                __month = 'julho'
-            elif month == 8:
-                __month = 'agosto'
-            elif month == 9:
-                __month = 'setembro'
-            elif month == 10:
-                __month = 'outubro'
-            elif month == 11:
-                __month = 'novembro'
-            elif month == 12:
-                __month = 'dezembro'
-            else:
-                raise ValueError('Invalid Month')
-        elif format == "us":
-            if month == 1:
-                __month = 'January'
-            elif month == 2:
-                __month = 'February'
-            elif month == 3:
-                __month = 'March'
-            elif month == 4:
-                __month = 'April'
-            elif month == 5:
-                __month = 'May'
-            elif month == 6:
-                __month = 'June'
-            elif month == 7:
-                __month = 'July'
-            elif month == 8:
-                __month = 'August'
-            elif month == 9:
-                __month = 'September'
-            elif month == 10:
-                __month = 'October'
-            elif month == 11:
-                __month = 'November'
-            elif month == 12:
-                __month = 'December'
-            else:
-                raise ValueError('Invalid Month')
-        else:
-            raise ValueError('Invalid format')
-
-        return __month
+        try:
+            return months[locale][month - 1]
+        except (KeyError, IndexError):
+            raise ValueError("Invalid month or locale")
